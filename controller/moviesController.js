@@ -1,11 +1,11 @@
-// Importiamo il file di connessione al database
+// database
 const connection = require('../data/db')
 
 // Index
 function index(req, res) {
-    // prepariamo la query
+    //  query movies
     const sql = 'SELECT * FROM movies'
-    // eseguiamo la query
+
     connection.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query failed' })
         res.json(results);
@@ -15,7 +15,7 @@ function index(req, res) {
 function show(req, res) {
 
     const id = req.params.id
-
+    // query movies for id
     const sql = `SELECT * FROM movies WHERE id = ?`
 
 
@@ -26,7 +26,7 @@ function show(req, res) {
 
 
         const movie = results[0]
-
+        // query reviews
         const sql = `SELECT * FROM reviews WHERE movie_id = ?`
 
         connection.query(sql, [id], (err, results) => {

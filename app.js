@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 })
 // movies
 app.use('/movies', moviesRouter)
-// attiviamo il server
+// server
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
