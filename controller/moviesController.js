@@ -11,9 +11,7 @@ function index(req, res) {
         res.json(results);
     })
 }
-
 // Show
-
 function show(req, res) {
 
     const id = req.params.id
