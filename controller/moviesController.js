@@ -3,9 +3,23 @@ const connection = require('../data/db')
 
 
 // Index
-function index(_, res) {
+function index(req, res) {
+
+    const { search } = req.query
+
     //  query movies
-    const sql = 'SELECT * FROM movies'
+    let sql = `
+    SELECT
+        movies.*, AVG(reviews.vote) AS media_recensioni
+    FROM 
+        movies
+    LEFT JOIN
+        reviews ON movies.id = reviews.movie_id
+    `
+    if (search) {
+        sql += `WHERE title LIKE "%${search}%" OR director LIKE  "%${search}%" OR abstract LIKE  "%${search}%" `
+    }
+    sql += ` GROUP BY movies.id`
 
     connection.query(sql, (err, results) => {
         if (err) return res.status(500).json({
