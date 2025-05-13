@@ -5,9 +5,6 @@ const cors = require('cors')
 // middlewares error
 const notFound = require('./middlewares/notFound')
 const handleError = require('./middlewares/handleError')
-// middlewares public
-app.use(express.static('public'))
-
 
 // router
 const moviesRouter = require('./router/movies')
@@ -17,6 +14,9 @@ app.use(cors({
     origin: process.env.FE_APP
 }))
 
+// middlewares public
+app.use(express.static('public'))
+
 // parsing del body
 app.use(express.json())
 
@@ -24,14 +24,14 @@ app.use(express.json())
 app.get('/', (req, res) => {
     res.send('Ciao')
 })
-
+// movies
+app.use('/api/movies', moviesRouter)
 // not found
 app.use(notFound)
 // error handler
 app.use(handleError)
 
-// movies
-app.use('/movies', moviesRouter)
+
 
 // server
 app.listen(port, () => {
