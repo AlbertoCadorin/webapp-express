@@ -33,12 +33,21 @@ function index(req, res) {
 
     })
 }
+
 // Show
 function show(req, res,) {
 
     const { id } = req.params
     // query movies for id
-    const sql = `SELECT * FROM movies WHERE id = ?`
+    const sql = `
+    SELECT
+        movies.*, ROUND(AVG(reviews.vote), 2) AS media_recensioni
+    FROM 
+        movies
+    LEFT JOIN
+        reviews ON movies.id = reviews.movie_id
+    WHERE movies.id = ?
+    `
 
 
     connection.query(sql, [id], (err, results) => {
@@ -52,7 +61,12 @@ function show(req, res,) {
         })
 
 
-        const movie = results[0]
+        const currentResult = results[0]
+
+        const movie = {
+            ...currentResult,
+            imagePath: process.env.PUBLIC_PATH + 'movies/' + currentResult.image,
+        }
 
         // query reviews
         const sql = `SELECT * FROM  movies_db.reviews WHERE movie_id = ?`
@@ -72,7 +86,31 @@ function show(req, res,) {
 }
 
 
+// Store review
+function storeReview(req, res) {
+    // id del film
+    const { id } = req.params
+    // corpo della richiesta
+    const { name, vote, review } = req.body
+
+    const sql = `
+    INSERT INTO reviews (movie_id, vote, review)
+    VALUES (?, ?, ?, ?)
+    `
+
+    connection.query(sql, [id, name, vote, review], (err, results) => {
+        if (err) return res.status(500).json({
+            error: 'Database query failed'
+        })
+
+        res.json({
+            message: 'Recensione inserita con successo',
+            id: results.insertId
+        })
+    })
+}
 
 
 
-module.exports = { index, show }
+
+module.exports = { index, show, storeReview }
