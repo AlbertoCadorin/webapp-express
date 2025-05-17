@@ -90,22 +90,26 @@ function show(req, res,) {
 function storeReview(req, res) {
     // id del film
     const { id } = req.params
+    console.log(req.body)
     // corpo della richiesta
-    const { name, vote, review } = req.body
+    const { name, vote, text } = req.body
 
     const sql = `
-    INSERT INTO reviews (movie_id, vote, review)
+    INSERT INTO reviews (movie_id, name, vote, text)
     VALUES (?, ?, ?, ?)
     `
 
-    connection.query(sql, [id, name, vote, review], (err, results) => {
+    connection.query(sql, [id, name, vote, text], (err, results) => {
         if (err) return res.status(500).json({
-            error: 'Database query failed'
+            error: err.sqlMessage
         })
 
+        res.status(201)
         res.json({
-            message: 'Recensione inserita con successo',
-            id: results.insertId
+            id,
+            name,
+            vote,
+            text
         })
     })
 }

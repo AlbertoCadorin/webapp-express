@@ -10,7 +10,7 @@ router.get('/', moviesController.index)
 router.get('/:id', moviesController.show)
 
 // post
-router.post('/:id', moviesController.storeReview)
+router.post('/:id/reviews', moviesController.storeReview)
 
 
 module.exports = router
